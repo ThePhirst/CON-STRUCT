@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cONstRuct — Downloads</title>
+    <title>TOMORROW — Downloads</title>
 
     <style>
         * {
@@ -100,13 +100,6 @@
             overflow-wrap: anywhere;
         }
 
-        .file-path {
-            margin-top: 5px;
-            color: #777;
-            font-size: 12px;
-            overflow-wrap: anywhere;
-        }
-
         .download {
             flex: 0 0 auto;
             display: inline-block;
@@ -121,14 +114,6 @@
         .download:hover {
             background: #fff;
             color: #000;
-        }
-
-        .message {
-            padding: 25px;
-            border: 1px solid #292929;
-            background: #0b0b0b;
-            color: #888;
-            text-align: center;
         }
 
         @media (max-width: 600px) {
@@ -188,75 +173,25 @@
         <p class="subtitle">FORYOURTROUBLES</p>
 
         <div class="tabs">
-            <button class="tab active" data-category="interfere">Interfere</button>
-            <button class="tab" data-category="Miscellaneous">Miscellaneous</button>
+            <button class="tab active" data-category="tomorrow">TOMORROW</button>
         </div>
 
-        <div id="downloads">
-            <div class="message">Loading files...</div>
-        </div>
+        <div id="downloads"></div>
     </main>
 
     <img id="customCursor" src="https://raw.githubusercontent.com/ThePhirst/gallery/main/images/node.gif" alt="">
 
     <script>
         const customCursor = document.getElementById("customCursor");
+        const downloads = document.getElementById("downloads");
 
         document.addEventListener("mousemove", function(event) {
             customCursor.style.left = event.clientX + "px";
             customCursor.style.top = event.clientY + "px";
         });
 
-        const repository = "ThePhirst/cONstRuct";
-        const branch = "main";
-        const apiUrl = `https://api.github.com/repos/${repository}/git/trees/${branch}?recursive=1`;
-
-        const downloads = document.getElementById("downloads");
-        const tabs = document.querySelectorAll(".tab");
-
-        let allFiles = [];
-        let activeCategory = "interfere";
-
-        const interfereFile = {
-            name: "Interfere",
-            id: "1gLQKurWedMv2bBpWJWYJIGIuoHgQyrMb",
-            preview: "interfere.jpg"
-        };
-
-        const miscellaneousFiles = [
-            {
-                name: "Celgora",
-                id: "1HWt_Jnf-Mzs1gl9q54PqmpDB4T7UOZQl",
-                preview: "celgora.jpg"
-            },
-            {
-                name: "Keyboardprompt",
-                id: "1oygkpGh-vLu-qvk_bUnM5aRAvXmlbedh",
-                preview: "keyboardprompt.jpg"
-            },
-            {
-                name: "Procedure",
-                id: "1RgKLEJzDU1-rSlPaaVSFeCgRPp4EaDQj",
-                preview: "procedure.jpg"
-            },
-            {
-                name: "Shapey",
-                id: "1BbqEzCEXWsPzTbJ939CNNsiFCSrvIFFn",
-                preview: "shapey.jpg"
-            },
-            {
-                name: "Zenith",
-                id: "1xZudCfEtpiKvi1jC9UrKfLfwYhd0NP8d",
-                preview: "zenith.jpg"
-            }
-        ];
-
-        function getDownloadUrl(path) {
-            return `https://github.com/${repository}/raw/refs/heads/${branch}/${path.split("/").map(encodeURIComponent).join("/")}`;
-        }
-
         function getGoogleDriveDownloadUrl(id) {
-            return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`;
+            return "https://drive.google.com/uc?export=download&id=" + encodeURIComponent(id);
         }
 
         function createFileElement(file) {
@@ -277,21 +212,14 @@
 
             const name = document.createElement("div");
             name.className = "file-name";
-            name.textContent = file.name || file.path.split("/").pop();
+            name.textContent = file.name;
 
             info.appendChild(name);
 
-            if (file.path) {
-                const path = document.createElement("div");
-                path.className = "file-path";
-                path.textContent = file.path;
-                info.appendChild(path);
-            }
-
             const button = document.createElement("a");
             button.className = "download";
-            button.href = file.downloadUrl || getDownloadUrl(file.path);
-            button.download = file.name || file.path.split("/").pop();
+            button.href = file.downloadUrl;
+            button.download = file.name;
             button.textContent = "Download";
 
             item.appendChild(info);
@@ -300,80 +228,25 @@
             return item;
         }
 
-        function showCategory(category) {
-            activeCategory = category;
-
-            tabs.forEach(tab => {
-                tab.classList.toggle("active", tab.dataset.category === category);
-            });
-
-            downloads.innerHTML = "";
-
-            if (category.toLowerCase() === "interfere") {
-                downloads.appendChild(createFileElement({
-                    name: interfereFile.name,
-                    downloadUrl: getGoogleDriveDownloadUrl(interfereFile.id),
-                    previewUrl: "images/" + interfereFile.preview
-                }));
-                return;
+        const tomorrowFiles = [
+            {
+                name: "TOMORROW",
+                downloadUrl: getGoogleDriveDownloadUrl("14QFyxxJpugKx0K2Bc2oGYMSqzclpxcMT"),
+                previewUrl: "images/tomorrow.jpg"
+            },
+            {
+                name: "Text File",
+                downloadUrl: getGoogleDriveDownloadUrl("1WyPRCcvgKKBYVo9j9tLPLufdC23ajWjq")
+            },
+            {
+                name: "PDF File",
+                downloadUrl: getGoogleDriveDownloadUrl("1QMX7tzJuekQlqiZKm053IPw_SrrCMxX5")
             }
+        ];
 
-            if (category.toLowerCase() === "miscellaneous") {
-                miscellaneousFiles.forEach(file => {
-                    downloads.appendChild(createFileElement({
-                        name: file.name,
-                        downloadUrl: getGoogleDriveDownloadUrl(file.id),
-                        previewUrl: "images/" + file.preview
-                    }));
-                });
-                return;
-            }
-
-            const categoryFiles = allFiles.filter(file => {
-                const firstFolder = file.path.split("/")[0];
-                return firstFolder.toLowerCase() === category.toLowerCase();
-            });
-
-            if (categoryFiles.length === 0) {
-                downloads.innerHTML = '<div class="message">No downloadable files are currently available.</div>';
-                return;
-            }
-
-            categoryFiles.forEach(file => {
-                downloads.appendChild(createFileElement(file));
-            });
-        }
-
-        tabs.forEach(tab => {
-            tab.addEventListener("click", function() {
-                showCategory(tab.dataset.category);
-            });
+        tomorrowFiles.forEach(file => {
+            downloads.appendChild(createFileElement(file));
         });
-
-        async function loadFiles() {
-            try {
-                const response = await fetch(apiUrl);
-
-                if (!response.ok) {
-                    throw new Error("GitHub API request failed");
-                }
-
-                const data = await response.json();
-
-                allFiles = data.tree.filter(file =>
-                    file.type === "blob" &&
-                    file.path !== "index.html" &&
-                    file.path !== "README.md"
-                );
-
-                showCategory(activeCategory);
-            } catch (error) {
-                downloads.innerHTML = '<div class="message">Unable to load the available files.</div>';
-                console.error(error);
-            }
-        }
-
-        loadFiles();
     </script>
 </body>
 </html>
