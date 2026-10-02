@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cONstRuct — Downloads</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 40px 20px;
+        }
+
+        main {
+            width: min(100%, 900px);
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            margin: 10px 0 35px;
+            text-align: center;
+            color: #999;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 13px 18px;
+            border: 1px solid #292929;
+            background: #0b0b0b;
+            color: #888;
+            font: inherit;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+
+        .tab:hover {
+            color: #fff;
+            border-color: #555;
+        }
+
+        .tab.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        #downloads {
+            display: grid;
+            gap: 12px;
+        }
+
+        .file {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px;
+            border: 1px solid #292929;
+            background: #0b0b0b;
+        }
+
+        .file-preview {
+            flex: 0 0 120px;
+            width: 120px;
+            height: 72px;
+            object-fit: cover;
+            display: block;
+            border: 1px solid #292929;
+        }
+
+        .file-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .file-name {
+            min-width: 0;
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .file-path {
+            margin-top: 5px;
+            color: #777;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .download {
+            flex: 0 0 auto;
+            display: inline-block;
+            padding: 9px 15px;
+            border: 1px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .download:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        .message {
+            padding: 25px;
+            border: 1px solid #292929;
+            background: #0b0b0b;
+            color: #888;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 25px 15px;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .file {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .file-preview {
+                width: 100%;
+                height: 160px;
+                flex-basis: auto;
+            }
+
+            .file-info {
+                width: 100%;
+            }
+
+            .download {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+
+    <link rel="icon" type="image/jpeg" href="https://raw.githubusercontent.com/ThePhirst/gallery/main/images/debug_nodraw.jpg">
+
+    <style>
+        html, body, * {
+            cursor: none !important;
+        }
+
+        #customCursor {
+            position: fixed;
+            display: block;
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 10001;
+            transform: translate(-6px, -6px);
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>cONstRuct</h1>
+        <p class="subtitle">FORYOURTROUBLES</p>
+
+        <div class="tabs">
+            <button class="tab active" data-category="interfere">Interfere</button>
+            <button class="tab" data-category="Miscellaneous">Miscellaneous</button>
+        </div>
+
+        <div id="downloads">
+            <div class="message">Loading files...</div>
+        </div>
+    </main>
+
+    <img id="customCursor" src="https://raw.githubusercontent.com/ThePhirst/gallery/main/images/node.gif" alt="">
+
+    <script>
+        const customCursor = document.getElementById("customCursor");
+
+        document.addEventListener("mousemove", function(event) {
+            customCursor.style.left = event.clientX + "px";
+            customCursor.style.top = event.clientY + "px";
+        });
+
+        const repository = "ThePhirst/cONstRuct";
+        const branch = "main";
+        const apiUrl = `https://api.github.com/repos/${repository}/git/trees/${branch}?recursive=1`;
+
+        const downloads = document.getElementById("downloads");
+        const tabs = document.querySelectorAll(".tab");
+
+        let allFiles = [];
+        let activeCategory = "interfere";
+
+        const interfereFile = {
+            name: "Interfere",
+            id: "1gLQKurWedMv2bBpWJWYJIGIuoHgQyrMb",
+            preview: "interfere.jpg"
+        };
+
+        const miscellaneousFiles = [
+            {
+                name: "Celgora",
+                id: "1HWt_Jnf-Mzs1gl9q54PqmpDB4T7UOZQl",
+                preview: "celgora.jpg"
+            },
+            {
+                name: "Keyboardprompt",
+                id: "1oygkpGh-vLu-qvk_bUnM5aRAvXmlbedh",
+                preview: "keyboardprompt.jpg"
+            },
+            {
+                name: "Procedure",
+                id: "1RgKLEJzDU1-rSlPaaVSFeCgRPp4EaDQj",
+                preview: "procedure.jpg"
+            },
+            {
+                name: "Shapey",
+                id: "1BbqEzCEXWsPzTbJ939CNNsiFCSrvIFFn",
+                preview: "shapey.jpg"
+            },
+            {
+                name: "Zenith",
+                id: "1xZudCfEtpiKvi1jC9UrKfLfwYhd0NP8d",
+                preview: "zenith.jpg"
+            }
+        ];
+
+        function getDownloadUrl(path) {
+            return `https://github.com/${repository}/raw/refs/heads/${branch}/${path.split("/").map(encodeURIComponent).join("/")}`;
+        }
+
+        function getGoogleDriveDownloadUrl(id) {
+            return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`;
+        }
+
+        function createFileElement(file) {
+            const item = document.createElement("div");
+            item.className = "file";
+
+            if (file.previewUrl) {
+                const preview = document.createElement("img");
+                preview.className = "file-preview";
+                preview.src = file.previewUrl;
+                preview.alt = "";
+                preview.loading = "lazy";
+                item.appendChild(preview);
+            }
+
+            const info = document.createElement("div");
+            info.className = "file-info";
+
+            const name = document.createElement("div");
+            name.className = "file-name";
+            name.textContent = file.name || file.path.split("/").pop();
+
+            info.appendChild(name);
+
+            if (file.path) {
+                const path = document.createElement("div");
+                path.className = "file-path";
+                path.textContent = file.path;
+                info.appendChild(path);
+            }
+
+            const button = document.createElement("a");
+            button.className = "download";
+            button.href = file.downloadUrl || getDownloadUrl(file.path);
+            button.download = file.name || file.path.split("/").pop();
+            button.textContent = "Download";
+
+            item.appendChild(info);
+            item.appendChild(button);
+
+            return item;
+        }
+
+        function showCategory(category) {
+            activeCategory = category;
+
+            tabs.forEach(tab => {
+                tab.classList.toggle("active", tab.dataset.category === category);
+            });
+
+            downloads.innerHTML = "";
+
+            if (category.toLowerCase() === "interfere") {
+                downloads.appendChild(createFileElement({
+                    name: interfereFile.name,
+                    downloadUrl: getGoogleDriveDownloadUrl(interfereFile.id),
+                    previewUrl: "images/" + interfereFile.preview
+                }));
+                return;
+            }
+
+            if (category.toLowerCase() === "miscellaneous") {
+                miscellaneousFiles.forEach(file => {
+                    downloads.appendChild(createFileElement({
+                        name: file.name,
+                        downloadUrl: getGoogleDriveDownloadUrl(file.id),
+                        previewUrl: "images/" + file.preview
+                    }));
+                });
+                return;
+            }
+
+            const categoryFiles = allFiles.filter(file => {
+                const firstFolder = file.path.split("/")[0];
+                return firstFolder.toLowerCase() === category.toLowerCase();
+            });
+
+            if (categoryFiles.length === 0) {
+                downloads.innerHTML = '<div class="message">No downloadable files are currently available.</div>';
+                return;
+            }
+
+            categoryFiles.forEach(file => {
+                downloads.appendChild(createFileElement(file));
+            });
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function() {
+                showCategory(tab.dataset.category);
+            });
+        });
+
+        async function loadFiles() {
+            try {
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    throw new Error("GitHub API request failed");
+                }
+
+                const data = await response.json();
+
+                allFiles = data.tree.filter(file =>
+                    file.type === "blob" &&
+                    file.path !== "index.html" &&
+                    file.path !== "README.md"
+                );
+
+                showCategory(activeCategory);
+            } catch (error) {
+                downloads.innerHTML = '<div class="message">Unable to load the available files.</div>';
+                console.error(error);
+            }
+        }
+
+        loadFiles();
+    </script>
+</body>
+</html>
